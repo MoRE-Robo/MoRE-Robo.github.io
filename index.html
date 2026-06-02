@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MORE | Anonymous Project</title>
+    <meta
+      name="description"
+      content="Website for MORE."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="MORE home">MORE</a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="#abstract">Abstract</a>
+        <a href="#method">Method</a>
+        <a href="#video">Results</a>
+        <!-- <a href="#materials">Materials</a> -->
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <canvas id="point-cloud" aria-hidden="true"></canvas>
+        <div class="hero-copy">
+          <!-- <p class="eyebrow">Anonymous submission / project page</p> -->
+          <h1 id="hero-title">MORE: Mixture-of-Experts for Multi-Physics Robotic World Models</h1>
+          <!-- <p class="subtitle">
+            We introduce MoRE, a 3D world model with a mixture of motion experts organized around rigid, deformable, and prehensile dynamics. This design enables a single model to capture diverse physical behaviors while preserving regime-specific priors.
+          </p> -->
+          <div class="meta-line" aria-label="Project metadata">
+            <!-- <span>Anonymous Authors</span> -->
+            <span>Under Review CoRL 2026</span>
+            <!-- <span>Submission #0000</span> -->
+          </div>
+          <div class="actions" aria-label="Project links">
+            <a class="button primary" href="assets/_CoRL_2026__MoRE.pdf">Paper</a>
+            <a class="button" href="#video">Results</a>
+            <a class="button" href="#materials">Code</a>
+            <!-- <a class="button" href="#results">Results</a> -->
+          </div>
+        </div>
+      </section>
+      
+      <section id="whole" class="section" aria-label="Video">
+        <figure class="media-frame">
+          <video class="media-video" controls preload="metadata" playsinline>
+            <source src="assets/video_final.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <figcaption>
+            We introduce MoRE, a 3D world model with a mixture of motion experts organized around rigid, deformable, and prehensile dynamics. This design enables a single model to capture diverse physical behaviors while preserving regime-specific priors.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section id="abstract" class="section narrow" aria-labelledby="abstract-title">
+        <p class="section-kicker">Overview</p>
+        <h2 id="abstract-title">Abstract</h2>
+        <p>
+          A robotic world model should predict how objects evolve under robot actions and physical dynamics. While recent 3D world models have shown strong predictive capabilities, they still struggle with the heterogeneous dynamics arising from diverse object interactions. To address this in a unified framework, we decompose robotic interactions into distinct physical regimes and assign each to a specialized motion expert. We introduce MoRE, a 3D world model with a mixture of motion experts organized around rigid, deformable, and prehensile dynamics. This design enables a single model to capture diverse physical behaviors while preserving regime-specific priors. Trained on mixed simulation and real-world data, MoRE integrates with Model Predictive Control (MPC) to support diverse manipulation tasks. Experiments show that MoRE improves prediction accuracy across physics regimes, leading to stronger real-world MPC performance.
+        </p>
+      </section>
+
+      <section id="method" class="section" aria-labelledby="method-title">
+        <div class="section-heading">
+          <p class="section-kicker">Approach</p>
+          <h2 id="method-title">Method Overview</h2>
+        </div>
+        <!-- <div class="method-grid">
+          <article class="method-step">
+            <span class="step-number">01</span>
+            <h3>TODO Input</h3>
+            <p>Describe the input setting, data, task, or user interaction.</p>
+          </article>
+          <article class="method-step">
+            <span class="step-number">02</span>
+            <h3>TODO Model</h3>
+            <p>Describe the core model, algorithm, architecture, or pipeline.</p>
+          </article>
+          <article class="method-step">
+            <span class="step-number">03</span>
+            <h3>TODO Output</h3>
+            <p>Describe what MORE produces and why it matters.</p>
+          </article>
+        </div> -->
+        <figure class="media-frame">
+        <img
+          class="media-image"
+          src="assets/pipeline_01.png"
+          alt="Method overview of MoRE"
+          loading="lazy"
+          decoding="async"
+        />
+          <figcaption>
+           Overview of MoRE. Given the current and historical object states and actions, represented as point clouds, we first encode the scene and actor inputs into point tokens using two encoders. An explicit gating network then selects among specialized motion experts, each tailored to a distinct physical regime, to predict the next object state in 3D. P = prehensile, NP = non-prehensile.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section id="video" class="section split" aria-labelledby="video-title">
+        <div>
+          <p class="section-kicker">Walkthrough</p>
+          <h2 id="video-title">Visualization Results</h2>
+          <p>
+The representative samples span rigid and soft objects under non-prehensile and prehensile interactions across both simulation and real-world settings, covering diverse contact dynamics and interactions.           </p>
+        <!-- </div>
+        <div class="video-placeholder" role="img" aria-label="Video placeholder">
+          <span class="play-dot"></span>
+          <p>TODO video embed or local MP4</p> -->
+        </div>
+      <!-- </section> -->
+
+      <!-- <section id="video" class="section video-sections" aria-label="Video results"> -->
+        <div class="video-group">
+          <h2 class="video-group-title">Dynamics Prediction Results in Simulation</h2>
+          <div class="video-grid">
+            <figure class="video-card">
+              <video class="media-video" controls preload="metadata" playsinline>
+                <source src="assets/push_bottle.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <figcaption>Push bottle.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video class="media-video" controls preload="metadata" playsinline>
+                <source src="assets/push_stapler.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <figcaption>Push stapler.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="video-group">
+          <h2 class="video-group-title">MPC Rollout Results in Simulation</h2>
+          <div class="video-subgroup">
+            <h3 class="video-subtitle">Rigid Non-prehensile Tasks</h3>
+            <div class="video-grid">
+              <figure class="video-card">
+                <video class="media-video" controls preload="metadata" playsinline>
+                  <source src="assets/mpc_shampoo.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                <figcaption>MPC shampoo.</figcaption>
+              </figure>
+              <figure class="video-card">
+                <video class="media-video" controls preload="metadata" playsinline>
+                  <source src="assets/mpc_toothpaste.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                <figcaption>MPC toothpaste.</figcaption>
+              </figure>
+            </div>
+          </div>
+          <div class="video-subgroup">
+            <h3 class="video-subtitle">Deformable Non-prehensile Tasks</h3>
+            <div class="video-grid">
+              <figure class="video-card">
+                <video class="media-video" controls preload="metadata" playsinline>
+                  <source src="assets/mpc_cap.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                <figcaption>MPC cap.</figcaption>
+              </figure>
+              <figure class="video-card">
+                <video class="media-video" controls preload="metadata" playsinline>
+                  <source src="assets/mpc_sheep.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                <figcaption>MPC sheep.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+
+        <div class="video-group">
+          <h2 class="video-group-title">Dynamics Prediction Results in Real-world</h2>
+          <div class="video-grid single">
+            <figure class="video-card">
+              <video class="media-video" controls preload="metadata" playsinline>
+                <source src="assets/unified.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <figcaption>Unified real-world prediction.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="video-group">
+          <h2 class="video-group-title">MPC Rollout Results in Real-world</h2>
+          <div class="video-grid">
+            <figure class="video-card">
+              <video class="media-video" controls preload="metadata" playsinline>
+                <source src="assets/mpc_box.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <figcaption>MPC box.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video class="media-video" controls preload="metadata" playsinline>
+                <source src="assets/mpc_sloth.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <figcaption>MPC sloth.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- <section id="results" class="section" aria-labelledby="results-title">
+        <div class="section-heading">
+          <p class="section-kicker">Interactive Results</p>
+          <h2 id="results-title">Qualitative Examples</h2>
+        </div>
+        <div class="scene-tabs" role="tablist" aria-label="Result examples">
+          <button class="scene-tab active" type="button" data-scene="scene-a">
+            Example A
+          </button>
+          <button class="scene-tab" type="button" data-scene="scene-b">
+            Example B
+          </button>
+          <button class="scene-tab" type="button" data-scene="scene-c">
+            Example C
+          </button>
+        </div>
+        <div class="result-grid" aria-live="polite">
+          <article class="result-panel">
+            <h3 id="scene-title">TODO Example A</h3>
+            <p id="scene-copy">
+              Replace with a short caption explaining the selected result.
+            </p>
+            <div class="metric-row">
+              <span><strong id="metric-one">0.00</strong> TODO metric</span>
+              <span><strong id="metric-two">0%</strong> TODO metric</span>
+            </div>
+          </article>
+          <figure class="result-media">
+            <div id="scene-visual" class="scene-visual scene-a">
+              <span>TODO result media</span>
+            </div>
+            <figcaption>
+              Use still images, GIFs, MP4 clips, or anonymized screenshots here.
+            </figcaption>
+          </figure>
+        </div>
+      </section> -->
+<!-- 
+      <section class="section narrow" aria-labelledby="experiments-title">
+        <p class="section-kicker">Experiments</p>
+        <h2 id="experiments-title">Main Findings</h2>
+        <ul class="finding-list">
+          <li><strong>TODO Finding 1.</strong> Summarize the most important result.</li>
+          <li><strong>TODO Finding 2.</strong> Add an ablation or comparison.</li>
+          <li><strong>TODO Finding 3.</strong> Add a limitation or robustness result.</li>
+        </ul>
+      </section>
+
+      <section id="materials" class="section materials" aria-labelledby="materials-title">
+        <div>
+          <p class="section-kicker">Release</p>
+          <h2 id="materials-title">Materials</h2>
+          <p>
+            Point these buttons to anonymous paper, code, data, and appendix
+            links when they are ready.
+          </p>
+        </div>
+        <div class="material-links">
+          <a href="#" aria-disabled="true">TODO Paper PDF</a>
+          <a href="#" aria-disabled="true">TODO Code Repository</a>
+          <a href="#" aria-disabled="true">TODO Dataset</a>
+          <a href="#" aria-disabled="true">TODO Appendix</a>
+        </div>
+      </section> -->
+    </main>
+
+    <footer class="footer">
+      <p>
+        MORE project page. Last updated:
+        <time datetime="2026-06-02">June 2, 2026</time>.
+      </p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
