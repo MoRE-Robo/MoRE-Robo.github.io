@@ -470,6 +470,8 @@ figcaption {
   width: 100%;
   max-width: 100%;
   height: auto;
+  position: relative;
+  z-index: 1;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #000;
@@ -478,6 +480,12 @@ figcaption {
 .video-sections {
   display: grid;
   gap: clamp(36px, 6vw, 64px);
+}
+
+.video-intro {
+  display: grid;
+  gap: 8px;
+  max-width: 900px;
 }
 
 .video-group {
