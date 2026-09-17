@@ -140,7 +140,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 26px;
+  margin-top: 15px;
   color: var(--muted);
   font-size: 0.98rem;
 }
@@ -154,30 +154,94 @@ h1 {
   background: rgba(255, 255, 255, 0.58);
 }
 
+.authors {
+  max-width: 860px;
+  margin: 25px 0 0;
+  color: #334155;
+  font-size: clamp(1rem, 1.8vw, 1.16rem);
+  line-height: 1.8;
+}
+
+.authors sup {
+  margin-left: 1px;
+  font-size: 0.67em;
+  line-height: 0;
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 30px;
+  gap: 10px;
+  margin-top: 28px;
 }
 
 .button {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  padding: 10px 18px;
-  border: 1px solid rgba(11, 92, 86, 0.28);
-  background: rgba(255, 255, 255, 0.76);
-  color: var(--accent-strong);
-  font-weight: 750;
+  gap: 11px;
+  min-width: 158px;
+  min-height: 54px;
+  padding: 9px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink);
+  font-size: 0.96rem;
+  font-weight: 700;
   text-decoration: none;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.04);
+  transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  border-color: #94a3b8;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.11);
+}
+
+.button:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 3px;
+}
+
+.button-type {
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 32px;
+  flex: 0 0 39px;
+  border-radius: 5px;
+  background: #edf2f7;
+  color: #475569;
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+
+.button-arrow {
+  margin-left: auto;
+  color: #64748b;
+  font-size: 1.2rem;
+  line-height: 1;
 }
 
 .button.primary {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: #172b3d;
+  border-color: #172b3d;
   color: white;
+}
+
+.button.primary .button-type {
+  background: rgba(255, 255, 255, 0.14);
+  color: #e2e8f0;
+}
+
+.button.primary .button-arrow {
+  color: #a8d5d0;
+}
+
+.button.primary:hover {
+  background: #28445a;
+  border-color: #28445a;
 }
 
 .section {
@@ -430,7 +494,15 @@ figcaption {
   }
 
   .hero {
-    min-height: 760px;
+    min-height: 0;
+  }
+
+  .actions {
+    max-width: 440px;
+  }
+
+  .button {
+    flex: 1 1 150px;
   }
 
   .hero::after {
@@ -463,6 +535,12 @@ figcaption {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
 }
 
 .media-video {
