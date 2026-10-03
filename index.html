@@ -1,262 +1,516 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MoRE | CoRL 2026</title>
-    <meta
-      name="description"
-      content="MoRE: Mixture-of-Experts for Multi-Physics Robotic World Models. CoRL 2026."
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header class="site-header">
-      <a class="brand" href="#top" aria-label="MORE home">MORE</a>
-      <nav class="nav" aria-label="Primary navigation">
-        <a href="#abstract">Abstract</a>
-        <a href="#method">Method</a>
-        <a href="#video">Results</a>
-      </nav>
-    </header>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MoRE: Mixture-of-Experts for Multi-Physics Robotic World Models</title>
+  <meta name="description" content="MoRE is a 3D robotic world model that routes tool–object interactions to specialized rigid, deformable, and prehensile motion experts. CoRL 2026 (Spotlight)." />
+  <meta property="og:title" content="MoRE: Mixture-of-Experts for Multi-Physics Robotic World Models" />
+  <meta property="og:description" content="A unified 3D world model with physics-aligned motion experts. CoRL 2026 Spotlight." />
+  <meta property="og:image" content="assets/figs/teaser.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Roboto+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
 
-    <main id="top">
-      <section class="hero" aria-labelledby="hero-title">
-        <canvas id="point-cloud" aria-hidden="true"></canvas>
-        <div class="hero-copy">
-          <h1 id="hero-title">MORE: Mixture-of-Experts for Multi-Physics Robotic World Models</h1>
-          <!-- <p class="subtitle">
-            We introduce MoRE, a 3D world model with a mixture of motion experts organized around rigid, deformable, and prehensile dynamics. This design enables a single model to capture diverse physical behaviors while preserving regime-specific priors.
-          </p> -->
-          <p class="authors">Ziyu Zhu<sup>*</sup>, Shaowei Liu<sup>*</sup>, Albert Zhai<sup>*</sup>, Henry Che, Wei-Chiu Ma, Shenlong Wang</p>
-          <div class="meta-line" aria-label="Publication venue">
-            <span>CoRL 2026</span>
+<!-- ============ TOP BAR ============ -->
+<header class="topbar" id="topbar">
+  <a class="wordmark" href="#top" aria-label="MoRE home"><span class="wm-m">M</span><span class="wm-o">o</span><span class="wm-re">RE</span></a>
+  <nav class="topnav" aria-label="Quick links">
+    <a href="assets/MoRE_CoRL2026.pdf" target="_blank" rel="noopener">Paper</a>
+    <a href="https://github.com/MoRE-Robo/MoRE-WM" target="_blank" rel="noopener">Code</a>
+    <a href="https://huggingface.co/datasets/MoRE-WM/MoRE-Data" target="_blank" rel="noopener">Data</a>
+    <a href="https://huggingface.co/MoRE-WM/MoRE-Model" target="_blank" rel="noopener">Model</a>
+  </nav>
+  <button class="toc-toggle" id="tocToggle" aria-expanded="false" aria-controls="toc">Contents</button>
+  <div class="read-progress" id="readProgress"></div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="hero-inner">
+    <div class="venue-badge"><span class="venue-dot"></span>CoRL 2026 <span class="venue-sep">·</span> <span class="venue-spot">Spotlight</span></div>
+    <h1 class="hero-title">
+      <span class="hero-mark"><span>M</span><span class="o">o</span><span>RE</span></span>
+      <span class="hero-sub">Mixture-of-Experts for Multi-Physics<br />Robotic World Models</span>
+    </h1>
+
+    <p class="authors">
+      <span>Ziyu Zhu<sup>1,2,*</sup></span>
+      <span>Shaowei Liu<sup>1,*</sup></span>
+      <span>Albert J. Zhai<sup>1,*</sup></span>
+      <span>Henry Che<sup>1</sup></span>
+      <span>Wei-Chiu Ma<sup>3</sup></span>
+      <span>Shenlong Wang<sup>1</sup></span>
+    </p>
+    <p class="affils">
+      <span><sup>1</sup>University of Illinois Urbana-Champaign</span>
+      <span><sup>2</sup>Georgia Institute of Technology</span>
+      <span><sup>3</sup>Cornell University</span>
+      <span class="eq"><sup>*</sup>Equal contribution</span>
+    </p>
+
+    <div class="hero-links">
+      <a class="pill-btn primary" href="assets/MoRE_CoRL2026.pdf" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M14 2v6h6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Paper</a>
+      <a class="pill-btn" href="https://github.com/MoRE-Robo/MoRE-WM" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.73-1.54-2.56-.29-5.25-1.28-5.25-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.7 5.38-5.27 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>Code</a>
+      <a class="pill-btn" href="https://huggingface.co/datasets/MoRE-WM/MoRE-Data" target="_blank" rel="noopener"><span class="hf">🤗</span>Dataset</a>
+      <a class="pill-btn" href="https://huggingface.co/MoRE-WM/MoRE-Model" target="_blank" rel="noopener"><span class="hf">🤗</span>Model</a>
+      <a class="pill-btn" href="#overview-video">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>Video</a>
+      <a class="pill-btn" href="#bibtex">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h4v4H8c0 2 1 3 3 3v2c-3 0-4-2-4-5zm7 0h4v4h-3c0 2 1 3 3 3v2c-3 0-4-2-4-5z" fill="currentColor"/></svg>BibTeX</a>
+    </div>
+
+    <div class="hero-legend" aria-hidden="true">
+      <span><i style="background:var(--ex-rigid)"></i>Rigid · non-prehensile</span>
+      <span><i style="background:var(--ex-defnp)"></i>Deformable · non-prehensile</span>
+      <span><i style="background:var(--ex-defp)"></i>Deformable · prehensile</span>
+      <span><i style="background:var(--tool)"></i>End-effector points</span>
+    </div>
+  </div>
+  <a class="scroll-cue" href="#tldr" aria-label="Scroll to content"><span></span></a>
+</section>
+
+<!-- ============ LAYOUT ============ -->
+<div class="layout">
+  <aside class="toc" id="toc" aria-label="Table of contents">
+    <div class="toc-title">Contents</div>
+    <ol>
+      <li><a href="#tldr">TL;DR</a></li>
+      <li><a href="#overview-video">Overview Video</a></li>
+      <li><a href="#abstract">Abstract</a></li>
+      <li><a href="#motivation">Motivation</a></li>
+      <li><a href="#method">Method</a>
+        <ol>
+          <li><a href="#moe-explorer">Expert Routing</a></li>
+          <li><a href="#architecture">Architecture</a></li>
+          <li><a href="#experts">Physics-Aware Experts</a></li>
+          <li><a href="#training">Training &amp; Inference</a></li>
+          <li><a href="#planning">Planning with MPC</a></li>
+        </ol>
+      </li>
+      <li><a href="#data">Dataset &amp; Model</a></li>
+      <li><a href="#results">Results</a>
+        <ol>
+          <li><a href="#sim-dynamics">Sim Dynamics</a></li>
+          <li><a href="#benchmark">Benchmark</a></li>
+          <li><a href="#droid">DROID vs. PointWorld</a></li>
+          <li><a href="#real-dynamics">Real-World Dynamics</a></li>
+          <li><a href="#mpc-sim">MPC in Simulation</a></li>
+          <li><a href="#mpc-real">MPC in Real World</a></li>
+        </ol>
+      </li>
+      <li><a href="#ablation">Ablation</a></li>
+      <li><a href="#takeaways">Takeaways</a></li>
+      <li><a href="#bibtex">Citation</a></li>
+    </ol>
+  </aside>
+
+  <main class="content">
+
+    <!-- TL;DR -->
+    <section id="tldr" class="sec">
+      <div class="tldr">
+        <div class="tldr-label">TL;DR</div>
+        <p><strong>MoRE</strong> is a 3D point-cloud world model that infers the physical regime from a short interaction history and routes each interaction to a dedicated <em>rigid</em>, <em>deformable</em>, or <em>prehensile</em> motion expert. One model, real-time, and ready for MPC.</p>
+      </div>
+      <div class="stats" data-reveal>
+        <div class="stat"><div class="stat-num" data-count="3">3</div><div class="stat-lbl">physics-aligned<br/>motion experts</div></div>
+        <div class="stat"><div class="stat-num"><span data-count="20">20</span><small> FPS</small></div><div class="stat-lbl">real-time<br/>rollout</div></div>
+        <div class="stat"><div class="stat-num"><span data-count="38.7" data-dec="1">38.7</span><small>K</small></div><div class="stat-lbl">sim + real<br/>training episodes</div></div>
+        <div class="stat"><div class="stat-num"><span data-count="96.7" data-dec="1">96.7</span><small>%</small></div><div class="stat-lbl">expert-routing<br/>accuracy</div></div>
+        <div class="stat"><div class="stat-num"><span>−</span><span data-count="50">50</span><small>%</small></div><div class="stat-lbl">RMSE vs. PointWorld<br/>(DROID, soft pushing)</div></div>
+      </div>
+    </section>
+
+    <!-- VIDEO -->
+    <section id="overview-video" class="sec">
+      <div class="sec-head"><span class="kicker">Overview</span><h2>Three-minute walkthrough</h2></div>
+      <figure class="frame video-frame">
+        <video controls preload="metadata" playsinline poster="assets/web/video_final.jpg">
+          <source src="assets/video_final.mp4" type="video/mp4" />
+        </video>
+        <figcaption><span class="cap-tag">Audio</span> Narrated overview of MoRE.</figcaption>
+      </figure>
+    </section>
+
+    <!-- ABSTRACT -->
+    <section id="abstract" class="sec">
+      <div class="sec-head"><span class="kicker">Abstract</span><h2>Abstract</h2></div>
+      <p class="lead-p">A robotic world model should predict how objects evolve under robot actions and physical dynamics. While recent 3D world models have shown strong predictive capabilities, they still struggle with the heterogeneous dynamics arising from diverse object interactions. To address this in a unified framework, we decompose robotic interactions into distinct physical regimes and assign each to a specialized motion expert. We introduce <strong>MoRE</strong>, a 3D world model with a mixture of motion experts organized around rigid, deformable, and prehensile dynamics. This design enables a single model to capture diverse physical behaviors while preserving regime-specific priors. Trained on mixed simulation and real-world data, MoRE integrates with Model Predictive Control (MPC) to support diverse manipulation tasks. Experiments show that MoRE improves prediction accuracy across physics regimes, leading to stronger real-world MPC performance.</p>
+    </section>
+
+    <!-- MOTIVATION -->
+    <section id="motivation" class="sec">
+      <div class="sec-head"><span class="kicker">Motivation</span><h2>What would happen if the robot did <em class="hl">this</em>… or <em class="hl">this</em>?</h2></div>
+      <figure class="frame">
+        <img src="assets/figs/teaser.jpg" width="1584" height="694" alt="MoRE predicts action-conditioned 3D dynamics for rigid and deformable objects under prehensile and non-prehensile actions" loading="lazy" />
+        <figcaption>One MoE world model for rigid and deformable objects, prehensile and non-prehensile actions, running at 20 FPS.</figcaption>
+      </figure>
+
+      <div class="two-col">
+        <div>
+          <h3>Scaling alone is not enough</h3>
+          <p>A manipulation world model must be <strong>3D</strong>, <strong>multi-physics</strong>, <strong>multi-tool</strong>, and <strong>feed-forward</strong>. Existing methods cover only part of this. MoRE pairs a large mixed dataset with a <strong>physics-informed mixture of motion experts</strong>.</p>
+        </div>
+        <div class="cap-table-wrap" data-reveal>
+          <table class="cap-table" id="capTable">
+            <thead><tr><th>Method</th><th>Feed-<br/>forward</th><th>Multi-<br/>physics</th><th>Multi-<br/>tool</th><th>3D</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <p class="table-note">† ParticleFormer supports multiple tools but is trained per scene. PointWorld relies on implicit dynamics; MoRE explicitly routes to physics-aligned experts.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- METHOD -->
+    <section id="method" class="sec">
+      <div class="sec-head"><span class="kicker">Method</span><h2>One shared encoder, many physics</h2>
+        <p class="sec-intro">MoRE treats both the scene and the robot action as 3D point clouds and predicts future scene point clouds autoregressively.</p></div>
+
+      <div class="formula-card" data-reveal>
+        <div class="formula" data-tex="\mathbf{s}_{t+1:t+H} = f_\theta\big(\mathbf{s}_t,\ \mathbf{a}_t,\ \mathbf{s}_{t-H':t-1},\ \mathbf{a}_{t-H':t-1}\big)"></div>
+        <div class="formula-legend">
+          <span><b>s<sub>t</sub></b> ∈ ℝ<sup>N<sub>S</sub>×3</sup>: object point cloud</span>
+          <span><b>a<sub>t</sub></b> ∈ ℝ<sup>N<sub>A</sub>×3</sup>: the <em>tool</em> as a point cloud (via forward kinematics)</span>
+          <span><b>H′ = 8</b> history steps · <b>H = 3</b> step horizon</span>
+        </div>
+      </div>
+
+      <!-- MoE explorer -->
+      <div id="moe-explorer" class="subsec">
+        <h3 class="sub-h"><span class="sub-num">3.1</span>Interactive: watch the router pick an expert</h3>
+        <div class="tabs" role="tablist" data-tabs="moe">
+          <button role="tab" class="tab active" data-key="rigid"><i style="background:var(--ex-rigid)"></i>Rigid · Non-prehensile</button>
+          <button role="tab" class="tab" data-key="defnp"><i style="background:var(--ex-defnp)"></i>Deformable · Non-prehensile</button>
+          <button role="tab" class="tab" data-key="defp"><i style="background:var(--ex-defp)"></i>Deformable · Prehensile</button>
+        </div>
+        <div class="moe-grid">
+          <div class="moe-canvas-card">
+            <div class="mini-label">Point-cloud rollout <span class="muted">· schematic</span></div>
+            <canvas id="moeCanvas"></canvas>
+            <div class="moe-canvas-foot">
+              <span><i class="dot" style="background:var(--tool)"></i>tool / end-effector</span>
+              <span><i class="dot rainbow"></i>predicted 3D flow</span>
+            </div>
           </div>
-          <div class="actions" aria-label="Project links">
-            <a class="button primary" href="assets/_CoRL_2026__MoRE.pdf"><span class="button-type">PDF</span><span>Paper</span><span class="button-arrow" aria-hidden="true">&nearr;</span></a>
-            <a class="button" href="#video"><span class="button-type">VIEW</span><span>Results</span><span class="button-arrow" aria-hidden="true">&darr;</span></a>
-            <a class="button" href="https://github.com/MoRE-Robo/MoRE-WM"><span class="button-type">GIT</span><span>Code</span><span class="button-arrow" aria-hidden="true">&nearr;</span></a>
+          <div class="moe-diagram-card">
+            <svg id="moeSvg" viewBox="0 0 640 380" role="img" aria-label="MoRE architecture with router selecting an expert"></svg>
           </div>
         </div>
-      </section>
-      
-      <section id="whole" class="section" aria-label="Video">
-        <figure class="media-frame">
-          <video class="media-video" controls preload="metadata" playsinline>
-            <source src="assets/video_final.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          <figcaption>
-            We introduce MoRE, a 3D world model with a mixture of motion experts organized around rigid, deformable, and prehensile dynamics. This design enables a single model to capture diverse physical behaviors while preserving regime-specific priors.
-          </figcaption>
+        <div class="moe-explain" id="moeExplain"></div>
+      </div>
+
+      <!-- Architecture figure -->
+      <div id="architecture" class="subsec">
+        <h3 class="sub-h"><span class="sub-num">3.2</span>Architecture</h3>
+        <figure class="frame white">
+          <img src="assets/figs/pipeline.jpg" width="1584" height="507" alt="Overview of MoRE architecture" loading="lazy" />
+          <figcaption>A frozen <b>static encoder</b> (Uni3D) and a <b>motion encoder</b> (transformer over object + tool history) are fused by cross-attention. A <b>gating network</b> then selects one physics-specific expert at every rollout step.</figcaption>
         </figure>
-      </section>
+      </div>
 
-      <section id="abstract" class="section narrow" aria-labelledby="abstract-title">
-        <p class="section-kicker">Overview</p>
-        <h2 id="abstract-title">Abstract</h2>
-        <p>
-          A robotic world model should predict how objects evolve under robot actions and physical dynamics. While recent 3D world models have shown strong predictive capabilities, they still struggle with the heterogeneous dynamics arising from diverse object interactions. To address this in a unified framework, we decompose robotic interactions into distinct physical regimes and assign each to a specialized motion expert. We introduce MoRE, a 3D world model with a mixture of motion experts organized around rigid, deformable, and prehensile dynamics. This design enables a single model to capture diverse physical behaviors while preserving regime-specific priors. Trained on mixed simulation and real-world data, MoRE integrates with Model Predictive Control (MPC) to support diverse manipulation tasks. Experiments show that MoRE improves prediction accuracy across physics regimes, leading to stronger real-world MPC performance.
-        </p>
-      </section>
-
-      <section id="method" class="section" aria-labelledby="method-title">
-        <div class="section-heading">
-          <p class="section-kicker">Approach</p>
-          <h2 id="method-title">Method Overview</h2>
+      <!-- Experts -->
+      <div id="experts" class="subsec">
+        <h3 class="sub-h"><span class="sub-num">3.3</span>Physics-aware experts</h3>
+        <div class="expert-cards" data-reveal>
+          <article class="expert-card" style="--c:var(--ex-rigid)">
+            <div class="expert-top"><span class="expert-chip">Expert 1</span><h4>Rigid · Non-prehensile</h4></div>
+            <p>Predicts a global SE(3) transform and rigidly warps the cloud.</p>
+            <div class="formula sm" data-tex="\mathbf{s}_{t+1:t+H} = \mathbf{R}\,\mathbf{s}_t + \mathbf{t}"></div>
+            <div class="expert-foot">Enforces rigidity by construction → <b>0.0</b> rigidity error</div>
+          </article>
+          <article class="expert-card" style="--c:var(--ex-defnp)">
+            <div class="expert-top"><span class="expert-chip">Expert 2</span><h4>Deformable · Non-prehensile</h4></div>
+            <p>Per-point displacements for pushing and sliding soft objects.</p>
+            <div class="formula sm" data-tex="\mathbf{s}_{t+1:t+H} = \mathbf{s}_{t:t+H-1} + \Delta\mathbf{s}"></div>
+            <div class="expert-foot">Local dents + global drift of soft bodies</div>
+          </article>
+          <article class="expert-card" style="--c:var(--ex-defp)">
+            <div class="expert-top"><span class="expert-chip">Expert 3</span><h4>Deformable · Prehensile</h4></div>
+            <p>Same form, separate weights, specialized for grasping: squeeze, lift, stretch.</p>
+            <div class="formula sm" data-tex="\mathbf{s}_{t+1:t+H} = \mathbf{s}_{t:t+H-1} + \Delta\mathbf{s}"></div>
+            <div class="expert-foot">Sustained contact, large non-rigid change</div>
+          </article>
         </div>
-        <!-- <div class="method-grid">
-          <article class="method-step">
-            <span class="step-number">01</span>
-            <h3>TODO Input</h3>
-            <p>Describe the input setting, data, task, or user interaction.</p>
-          </article>
-          <article class="method-step">
-            <span class="step-number">02</span>
-            <h3>TODO Model</h3>
-            <p>Describe the core model, algorithm, architecture, or pipeline.</p>
-          </article>
-          <article class="method-step">
-            <span class="step-number">03</span>
-            <h3>TODO Output</h3>
-            <p>Describe what MORE produces and why it matters.</p>
-          </article>
-        </div> -->
-        <figure class="media-frame">
-        <img
-          class="media-image"
-          src="assets/pipeline_01.png"
-          alt="Method overview of MoRE"
-          loading="lazy"
-          decoding="async"
-        />
-          <figcaption>
-           Overview of MoRE. Given the current and historical object states and actions, represented as point clouds, we first encode the scene and actor inputs into point tokens using two encoders. An explicit gating network then selects among specialized motion experts, each tailored to a distinct physical regime, to predict the next object state in 3D. P = prehensile, NP = non-prehensile.
-          </figcaption>
+      </div>
+
+      <!-- Training -->
+      <div id="training" class="subsec">
+        <h3 class="sub-h"><span class="sub-num">3.4</span>Training &amp; inference</h3>
+        <div class="two-col">
+          <div>
+            <p><b>Self-rollout training.</b> MoRE feeds its own predictions back as input during training, matching inference and reducing drift. The loss combines reconstruction with supervised routing:</p>
+            <div class="formula" data-tex="\mathcal{L}=\sum_{\ell=1}^{H}\big\|\mathbf{s}_{t+\ell}-\mathbf{s}^{\text{gt}}_{t+\ell}\big\|_2^2+\lambda\sum_{\ell=1}^{H}\mathrm{CE}\big(\hat{\mathbf{g}}_{t+\ell},\mathbf{g}^{\text{gt}}_{t+\ell}\big)"></div>
+          </div>
+          <div class="rollout-viz" data-reveal>
+            <div class="mini-label">Autoregressive self-rollout</div>
+            <div class="rollout-row" id="rolloutRow"></div>
+            <p class="muted small">Predictions are appended to the history buffer and fed back in.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Planning -->
+      <div id="planning" class="subsec">
+        <h3 class="sub-h"><span class="sub-num">3.5</span>Planning with the world model</h3>
+        <div class="mpc-grid">
+          <div class="mpc-canvas-card">
+            <div class="mini-label">Sampling-based MPC <span class="muted">· schematic, rigid push</span></div>
+            <canvas id="mpcCanvas"></canvas>
+            <div class="mpc-hud" id="mpcHud"></div>
+          </div>
+          <ol class="mpc-steps" id="mpcSteps">
+            <li data-i="0"><b>Probe</b>: a few random pokes; the router infers the regime.</li>
+            <li data-i="1"><b>Sample</b>: 48 candidate pushes (16 contacts × 3 directions).</li>
+            <li data-i="2"><b>Roll out</b>: every candidate with MoRE.</li>
+            <li data-i="3"><b>Score</b>: Chamfer distance to the goal; keep the best.</li>
+            <li data-i="4"><b>Execute &amp; re-plan</b>: from the newly observed point cloud.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- DATA & MODEL -->
+    <section id="data" class="sec">
+      <div class="sec-head"><span class="kicker">Open release</span><h2>Dataset &amp; model</h2>
+        <p class="sec-intro">Isaac Lab simulation + real-world (PGND toys, DROID) interactions in one 3D point-cloud format.</p></div>
+
+      <div class="data-grid">
+        <div class="data-card" data-reveal>
+          <div class="data-card-head">
+            <div><div class="mini-label">🤗 MoRE-WM / MoRE-Data</div><h3>38,732 episodes</h3></div>
+            <a class="ghost-btn" href="https://huggingface.co/datasets/MoRE-WM/MoRE-Data" target="_blank" rel="noopener">Open ↗</a>
+          </div>
+          <div class="donut-wrap">
+            <svg id="donut" viewBox="0 0 220 220" aria-label="Episode breakdown by source"></svg>
+            <ul class="donut-legend" id="donutLegend"></ul>
+          </div>
+          <div class="kv-row">
+            <div><b>303</b><span>HDF5 shards</span></div>
+            <div><b>10.6 GB</b><span>total size</span></div>
+            <div><b>60</b><span>frames / episode</span></div>
+            <div><b>8 + 3</b><span>history + horizon</span></div>
+          </div>
+        </div>
+
+        <div class="data-card" data-reveal>
+          <div class="data-card-head">
+            <div><div class="mini-label">🤗 MoRE-WM / MoRE-Model</div><h3>Unified checkpoint</h3></div>
+            <a class="ghost-btn" href="https://huggingface.co/MoRE-WM/MoRE-Model" target="_blank" rel="noopener">Open ↗</a>
+          </div>
+          <div class="file-row"><span class="file-ico">.pth</span><div><b>model_mix_droid.pth</b><span>730.5 MB · trained on the sim + real + DROID mixture</span></div></div>
+          <dl class="spec">
+            <div><dt>Encoders</dt><dd>Uni3D (frozen) + motion transformer</dd></div>
+            <div><dt>Experts</dt><dd>3 heads · hard one-hot routing</dd></div>
+            <div><dt>Context</dt><dd>8 history steps → 3-step horizon</dd></div>
+            <div><dt>Speed</dt><dd>~20 FPS</dd></div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="code-card" data-reveal>
+        <div class="code-head"><span>Quick start</span><button class="copy-btn" data-copy="dlCode">Copy</button></div>
+<pre id="dlCode"><code><span class="c"># 1) Code</span>
+git clone https://github.com/MoRE-Robo/MoRE-WM.git
+
+<span class="c"># 2) Data (HDF5 is read from local disk, not streamed)</span>
+huggingface-cli download MoRE-WM/MoRE-Data --repo-type dataset --local-dir ./data/MoRE-Data
+
+<span class="c"># 3) Pretrained checkpoint</span>
+huggingface-cli download MoRE-WM/MoRE-Model model_mix_droid.pth --local-dir ./checkpoints</code></pre>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="results" class="sec">
+      <div class="sec-head"><span class="kicker">Results</span><h2>Seeing is believing</h2>
+        <p class="sec-intro">Drag the scrubber to step through predicted 3D flow frame by frame. MPC rollouts play as <span class="tag-p">prediction</span> → <span class="tag-e">execution</span> pairs, one planning step at a time.</p></div>
+
+      <!-- Sim dynamics -->
+      <div id="sim-dynamics" class="subsec">
+        <h3 class="sub-h"><span class="sub-num">4.1</span>Dynamics prediction in simulation</h3>
+        <div class="viewer" data-viewer="simdyn">
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-key="bottle"><i style="background:var(--ex-rigid)"></i>Rolling plastic bottle</button>
+            <button class="tab" data-key="stapler"><i style="background:var(--ex-rigid)"></i>Pushing stapler</button>
+          </div>
+          <div class="scrub-player" id="simdynPlayer"></div>
+          <p class="viewer-cap" id="simdynCap"></p>
+        </div>
+        <details class="more-fig">
+          <summary>More simulation rollouts from the paper</summary>
+          <figure class="frame white"><img src="assets/figs/sim_pred.jpg" width="1584" height="432" alt="More simulation rollouts" loading="lazy" />
+            <figcaption>More rigid (top) and deformable (bottom) rollouts.</figcaption></figure>
+        </details>
+      </div>
+
+      <!-- Quant -->
+      <div id="benchmark" class="subsec">
+        <h3 class="sub-h"><span class="sub-num">4.2</span>Dynamics benchmark</h3>
+        <p>One MoRE model matches <b>privileged experts</b> that are told the regime at test time, and beats neural-dynamics baselines. Lower is better.</p>
+        <div class="chart-card" data-reveal>
+          <div class="tabs small" role="tablist" data-tabs="bench">
+            <button class="tab active" data-key="0"><i style="background:var(--ex-rigid)"></i>Rigid NP</button>
+            <button class="tab" data-key="1"><i style="background:var(--ex-defnp)"></i>Deformable NP</button>
+            <button class="tab" data-key="2"><i style="background:var(--ex-defp)"></i>Deformable P</button>
+          </div>
+          <div class="bar-charts" id="benchCharts"></div>
+          <div class="chart-legend">
+            <span><i class="sw ours"></i>MoRE (ours, single model)</span>
+            <span><i class="sw priv"></i>Privileged expert (oracle regime)</span>
+            <span><i class="sw base"></i>Baselines</span>
+          </div>
+        </div>
+        <details class="more-fig">
+          <summary>Full table</summary>
+          <div class="table-scroll"><table class="res-table" id="benchTable"></table></div>
+        </details>
+      </div>
+
+      <!-- DROID -->
+      <div id="droid" class="subsec">
+        <h3 class="sub-h"><span class="sub-num">4.3</span>In-the-wild: DROID vs. PointWorld</h3>
+        <p>On cluttered, partially observed DROID scenes, MoRE beats PointWorld on <b>every metric in every regime</b>.</p>
+        <div class="droid-hero" data-reveal>
+          <div class="droid-big"><div class="big-num"><span>−</span><span id="droidAvg">0</span>%</div><div class="big-lbl">average RMSE reduction<br/>across the three regimes</div></div>
+          <div class="droid-cards" id="droidCards"></div>
+        </div>
+        <figure class="frame white">
+          <img src="assets/figs/droid_qual.jpg" width="1584" height="481" alt="Qualitative results on DROID" loading="lazy" />
+          <figcaption>Prediction vs. ground truth on DROID at steps 10 and 20.</figcaption>
         </figure>
-      </section>
+      </div>
 
-      <section id="video" class="section video-sections" aria-labelledby="video-title">
-        <div class="video-intro">
-          <p class="section-kicker">Walkthrough</p>
-          <h2 id="video-title">Visualization Results</h2>
-          <p>
-            The representative samples span rigid and soft objects under non-prehensile and prehensile interactions across both simulation and real-world settings, covering diverse contact dynamics and interactions.
-          </p>
-        </div>
-
-        <div class="video-group">
-          <h2 class="video-group-title">Dynamics Prediction Results in Simulation</h2>
-          <div class="video-grid">
-            <figure class="video-card">
-              <video class="media-video" controls preload="metadata" playsinline>
-                <source src="assets/push_bottle.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-              <figcaption>Pushing the Plastic Bottle.</figcaption>
-            </figure>
-            <figure class="video-card">
-              <video class="media-video" controls preload="metadata" playsinline>
-                <source src="assets/push_stapler.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-              <figcaption>Pushing the Stapler.</figcaption>
-            </figure>
+      <!-- Real dynamics -->
+      <div id="real-dynamics" class="subsec">
+        <h3 class="sub-h"><span class="sub-num">4.4</span>Real-world dynamics: one model, many materials</h3>
+        <div class="viewer" data-viewer="realdyn">
+          <div class="tabs" role="tablist" id="realdynTabs">
+            <button class="tab active" data-key="0"><i style="background:var(--ex-rigid)"></i>Pushing box</button>
+            <button class="tab" data-key="1"><i style="background:var(--ex-rigid)"></i>Pushing plate (left)</button>
+            <button class="tab" data-key="2"><i style="background:var(--ex-rigid)"></i>Pushing plate (right)</button>
+            <button class="tab" data-key="3"><i style="background:var(--ex-defp)"></i>Moving sloth</button>
           </div>
+          <div class="scrub-player" id="realdynPlayer"></div>
+          <p class="viewer-cap">One model, four interactions in the same scene: rigid box, plate from two sides, and a soft plush sloth.</p>
         </div>
+      </div>
 
-        <div class="video-group">
-          <h2 class="video-group-title">MPC Rollout Results in Simulation</h2>
-          <div class="video-subgroup">
-            <h3 class="video-subtitle">Rigid Non-prehensile Tasks</h3>
-            <div class="video-grid">
-              <figure class="video-card">
-                <video class="media-video" controls preload="metadata" playsinline>
-                  <source src="assets/mpc_shampoo.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-                <figcaption>Pushing the Shampoo Bottle.</figcaption>
-              </figure>
-              <figure class="video-card">
-                <video class="media-video" controls preload="metadata" playsinline>
-                  <source src="assets/mpc_toothpaste.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-                <figcaption>Pushing the Toothpaste.</figcaption>
-              </figure>
-            </div>
+      <!-- MPC sim -->
+      <div id="mpc-sim" class="subsec">
+        <h3 class="sub-h"><span class="sub-num">4.5</span>MPC rollouts in simulation</h3>
+        <div class="viewer" data-viewer="mpcsim">
+          <div class="tabs grouped" role="tablist">
+            <span class="tab-group">Rigid</span>
+            <button class="tab active" data-key="shampoo"><i style="background:var(--ex-rigid)"></i>Shampoo bottle</button>
+            <button class="tab" data-key="toothpaste"><i style="background:var(--ex-rigid)"></i>Toothpaste</button>
+            <span class="tab-group">Deformable</span>
+            <button class="tab" data-key="cap"><i style="background:var(--ex-defnp)"></i>Cap</button>
+            <button class="tab" data-key="sheep"><i style="background:var(--ex-defnp)"></i>Sheep toy</button>
           </div>
-          <div class="video-subgroup">
-            <h3 class="video-subtitle">Deformable Non-prehensile Tasks</h3>
-            <div class="video-grid">
-              <figure class="video-card">
-                <video class="media-video" controls preload="metadata" playsinline>
-                  <source src="assets/mpc_cap.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-                <figcaption>Pushing the Cap.</figcaption>
-              </figure>
-              <figure class="video-card">
-                <video class="media-video" controls preload="metadata" playsinline>
-                  <source src="assets/mpc_sheep.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-                <figcaption>Pushing the Sheep Toy.</figcaption>
-              </figure>
-            </div>
+          <div class="step-player" id="mpcsimPlayer"></div>
+        </div>
+        <details class="more-fig">
+          <summary>MPC rollout gallery from the paper</summary>
+          <figure class="frame white"><img src="assets/figs/sim_mpc.jpg" width="1584" height="925" alt="MPC rollouts in simulation" loading="lazy" />
+            <figcaption>MPC across diverse tools, objects, and materials.</figcaption></figure>
+        </details>
+      </div>
+
+      <!-- MPC real -->
+      <div id="mpc-real" class="subsec">
+        <h3 class="sub-h"><span class="sub-num">4.6</span>MPC in the real world</h3>
+        <div class="viewer" data-viewer="mpcreal">
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-key="box"><i style="background:var(--ex-rigid)"></i>Pushing box · rigid NP</button>
+            <button class="tab" data-key="sloth"><i style="background:var(--ex-defp)"></i>Moving sloth · deformable P</button>
           </div>
+          <div class="step-player" id="mpcrealPlayer"></div>
         </div>
 
-        <div class="video-group">
-          <h2 class="video-group-title">Dynamics Prediction Results in Real-world</h2>
-          <div class="video-grid single">
-            <figure class="video-card">
-              <video class="media-video" controls preload="metadata" playsinline>
-                <source src="assets/unified.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-              <figcaption>Handle heterogeneous materials in a single unified model.</figcaption>
-            </figure>
+        <div class="two-col align-start mt">
+          <div>
+            <h3>Lower error, higher success</h3>
+            <p>Compared with a heuristic model (points follow the end-effector) and <b>Vanilla*</b> (a single transformer, no experts), MoRE reaches lower Chamfer distance in fewer steps and succeeds at tighter thresholds.</p>
           </div>
-        </div>
-
-        <div class="video-group">
-          <h2 class="video-group-title">MPC Rollout Results in Real-world</h2>
-          <div class="video-grid">
-            <figure class="video-card">
-              <video class="media-video" controls preload="metadata" playsinline>
-                <source src="assets/mpc_box.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-              <figcaption>Pushing the Box.</figcaption>
-            </figure>
-            <figure class="video-card">
-              <video class="media-video" controls preload="metadata" playsinline>
-                <source src="assets/mpc_sloth.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-              <figcaption>Moving the Sloth.</figcaption>
-            </figure>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- <section id="results" class="section" aria-labelledby="results-title">
-        <div class="section-heading">
-          <p class="section-kicker">Interactive Results</p>
-          <h2 id="results-title">Qualitative Examples</h2>
-        </div>
-        <div class="scene-tabs" role="tablist" aria-label="Result examples">
-          <button class="scene-tab active" type="button" data-scene="scene-a">
-            Example A
-          </button>
-          <button class="scene-tab" type="button" data-scene="scene-b">
-            Example B
-          </button>
-          <button class="scene-tab" type="button" data-scene="scene-c">
-            Example C
-          </button>
-        </div>
-        <div class="result-grid" aria-live="polite">
-          <article class="result-panel">
-            <h3 id="scene-title">TODO Example A</h3>
-            <p id="scene-copy">
-              Replace with a short caption explaining the selected result.
-            </p>
-            <div class="metric-row">
-              <span><strong id="metric-one">0.00</strong> TODO metric</span>
-              <span><strong id="metric-two">0%</strong> TODO metric</span>
-            </div>
-          </article>
-          <figure class="result-media">
-            <div id="scene-visual" class="scene-visual scene-a">
-              <span>TODO result media</span>
-            </div>
-            <figcaption>
-              Use still images, GIFs, MP4 clips, or anonymized screenshots here.
-            </figcaption>
+          <figure class="frame white compact">
+            <img src="assets/figs/mpc_curves.jpg" width="1584" height="403" alt="MPC performance curves" loading="lazy" />
+            <figcaption>(a) Pushing box · (b) manipulating toy.</figcaption>
           </figure>
         </div>
-      </section> -->
-<!-- 
-      <section class="section narrow" aria-labelledby="experiments-title">
-        <p class="section-kicker">Experiments</p>
-        <h2 id="experiments-title">Main Findings</h2>
-        <ul class="finding-list">
-          <li><strong>TODO Finding 1.</strong> Summarize the most important result.</li>
-          <li><strong>TODO Finding 2.</strong> Add an ablation or comparison.</li>
-          <li><strong>TODO Finding 3.</strong> Add a limitation or robustness result.</li>
-        </ul>
-      </section>
+        <figure class="frame white">
+          <img src="assets/figs/real_pred.jpg" width="1584" height="559" alt="Vanilla vs MoRE real-world predictions" loading="lazy" />
+          <figcaption><b>Vanilla</b> (top) bends the box and stiffens the sloth; <b>MoRE</b> (bottom) gets both right. Red = end-effector points.</figcaption>
+        </figure>
+      </div>
+    </section>
 
-      -->
-    </main>
+    <!-- ABLATION -->
+    <section id="ablation" class="sec">
+      <div class="sec-head"><span class="kicker">Ablation</span><h2>Every component pulls its weight</h2>
+        <p class="sec-intro">Change relative to full MoRE (hover for raw values): <span class="swatch-inline worse"></span> worse, <span class="swatch-inline same"></span> equal.</p></div>
 
-    <footer class="footer">
-      <p>MORE project page.</p>
-    </footer>
+      <div class="heat-card" data-reveal>
+        <div class="table-scroll"><table class="heat" id="heatTable"></table></div>
+      </div>
 
-    <script src="script.js"></script>
-  </body>
+      <div class="ablate-grid" id="ablateGrid" data-reveal></div>
+
+      <div class="gate-card" data-reveal>
+        <div>
+          <h3>Does the router pick the right expert?</h3>
+          <p>Expert-selection accuracy over 50 random interactions per task.</p>
+        </div>
+        <div class="rings" id="gateRings"></div>
+      </div>
+    </section>
+
+    <!-- TAKEAWAYS -->
+    <section id="takeaways" class="sec">
+      <div class="sec-head"><span class="kicker">Takeaways</span><h2>Key takeaways &amp; limitations</h2></div>
+      <div class="take-grid" data-reveal>
+        <div class="take"><div class="take-n">01</div><h4>Route, don't average</h4><p>Hard routing to physics-aligned experts beats one monolithic model and soft mixing.</p></div>
+        <div class="take"><div class="take-n">02</div><h4>Structure where it's free</h4><p>An SE(3) rigid expert keeps rigidity exact; deformable experts stay flexible.</p></div>
+        <div class="take"><div class="take-n">03</div><h4>Accuracy becomes control</h4><p>Better multi-physics prediction gives better real-world MPC.</p></div>
+      </div>
+      <div class="limit"><b>Limitations.</b> Single manipulated object only; fine-grained properties such as mass or a bottle's fill level are not modeled explicitly.</div>
+    </section>
+
+    <!-- BIBTEX -->
+    <section id="bibtex" class="sec">
+      <div class="sec-head"><span class="kicker">Citation</span><h2>BibTeX</h2></div>
+      <div class="code-card">
+        <div class="code-head"><span>bibtex</span><button class="copy-btn" data-copy="bibCode">Copy</button></div>
+<pre id="bibCode"><code>@inproceedings{zhu2026more,
+  title     = {MoRE: Mixture-of-Experts for Multi-Physics Robotic World Models},
+  author    = {Zhu, Ziyu and Liu, Shaowei and Zhai, Albert J. and Che, Henry and Ma, Wei-Chiu and Wang, Shenlong},
+  booktitle = {Conference on Robot Learning (CoRL)},
+  year      = {2026}
+}</code></pre>
+      </div>
+      <p class="ack"><b>Acknowledgments.</b> This project is supported by the NSF Awards #2331878, #2340254, #2312102, #2414227, #2404385, and #2525287. We greatly appreciate the NCSA for providing computing resources through Delta and Delta AI program. We thank the support from the NVIDIA Academic Grant Program for Researchers.</p>
+    </section>
+  </main>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-mark"><span>M</span><span class="o">o</span><span>RE</span></div>
+    <div class="footer-insts">University of Illinois Urbana-Champaign · Georgia Institute of Technology · Cornell University</div>
+    <div class="footer-small">CoRL 2026 Spotlight · Austin, TX</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast">Copied</div>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="script.js"></script>
+</body>
 </html>
