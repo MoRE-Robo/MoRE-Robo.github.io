@@ -14,7 +14,7 @@ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").match
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const C = {
   rigid: css("--ex-rigid") || "#1d58a7", defnp: css("--ex-defnp") || "#00a3ad", defp: css("--ex-defp") || "#8c4fbf",
-  tool: css("--tool") || "#e8384f", orange: "#ff5f05", navy: "#13294b",
+  tool: css("--tool") || "#e8384f", orange: "#e5865a", navy: "#2b3a55",
 };
 
 /* visibility helper: run cb(visible) when element enters/leaves viewport */
@@ -278,7 +278,7 @@ function phaseU(t) {                      // t in [0,1)
 function initHero() {
   const cv = $("#heroCanvas"); if (!cv) return;
   const R = new PCRenderer(cv, { trails: true, alpha: 0.85, grid: true });
-  const kinds = ["rigid", "defnp", "defp"], cols = [C.rigid, "#2fd3dc", "#b98cff"];
+  const kinds = ["rigid", "defnp", "defp"], cols = [C.rigid, "#86d2ca", "#c6b3ea"];
   const objs = kinds.map((k, i) => ({ kind: k, base: makeObject(k, 11 + i), tool: makeTool(k), color: cols[i] }));
   let vis = true; watchVisible(cv, v => vis = v);
   const t0 = performance.now();
@@ -512,8 +512,8 @@ function initPlanner() {
     for (let x = 0; x < W; x += W / 16) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); }
     for (let y = 0; y < H; y += W / 16) { g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
     // goal
-    drawBox(goal, "#1d58a7", 0.25, 2, true);
-    g.fillStyle = "#1d58a7"; g.font = "500 11px Roboto Mono, monospace"; g.fillText("goal", (goal.x - BW / 2) * W, (goal.y - BH / 2) * W - 8);
+    drawBox(goal, "#4f78b3", 0.25, 2, true);
+    g.fillStyle = "#4f78b3"; g.font = "500 11px Roboto Mono, monospace"; g.fillText("goal", (goal.x - BW / 2) * W, (goal.y - BH / 2) * W - 8);
     let cur = st;
     if (phase === 0) { const j = Math.sin(p * Math.PI * 6) * 0.006 * (1 - p); cur = { x: st.x + j, y: st.y, th: st.th + j * 2 }; }
     if (phase === 1) cands.forEach((c, i) => { if (i / cands.length < p * 1.1) arrow(c.cw, c.dw, 0.05, "#7a879c", 0.55, 1); });
@@ -718,7 +718,7 @@ class StepPlayer {
     this.tl.innerHTML = "";
     this.cells = this.segs.map((s, k) => {
       const len = s.b - s.a + 1, btn = document.createElement("button");
-      btn.className = "tl-seg " + s.t; btn.style.flexGrow = Math.max(len, 26); btn.style.minWidth = "30px";
+      btn.className = "tl-seg " + s.t + (len < 45 ? " short" : ""); btn.style.flexGrow = Math.max(len, 26); btn.style.minWidth = "30px";
       btn.innerHTML = `<span class="tl-fill"></span><span class="tl-lbl"><span class="lf">${s.t === "P" ? "Predict" : "Exec"} </span><span class="ls">${s.t}</span>${s.step}</span>`;
       btn.title = `${s.t === "P" ? "MoRE prediction" : "Execution"} · step ${s.step} · frames ${s.a}–${s.b}`;
       btn.addEventListener("click", () => this.goto(k, true));
@@ -773,8 +773,11 @@ class StepPlayer {
     if (last) { this.fk.textContent = `${this.nSteps} planning steps`; this.ft.innerHTML = "Rollout complete ✓"; }
     else if (s.t === "P" && nx.t === "E") { this.fk.textContent = `Step ${s.step} · plan selected`; this.ft.innerHTML = `Prediction<span class="pf-arrow">→</span>Execute`; }
     else { this.fk.textContent = `Observe new point cloud`; this.ft.innerHTML = `Re-plan<span class="pf-arrow">→</span>Step ${nx.step}`; }
-    this.flash.classList.add("show");
-    this.timer = setTimeout(() => {
+    const isPred = s.t === "P" && !last;
+    this.timer = setTimeout(() => {                 // let the predicted flow be seen first
+      if (tok !== this.token) return;
+      this.flash.classList.add("show");
+      this.timer = setTimeout(() => {
       if (tok !== this.token) return;
       this.flash.classList.remove("show");
       this.i = last ? 0 : this.i + 1;
@@ -782,7 +785,8 @@ class StepPlayer {
       if (last || Math.abs(this.v.currentTime * FPS - ns.a) > 1.5) this.v.currentTime = (ns.a + 0.5) / FPS;
       this.hud(); this.paintTl(0);
       this.v.play().catch(() => {}); this.tick(tok);
-    }, last ? 1800 : 950);
+      }, last ? 1800 : isPred ? 700 : 900);
+    }, isPred ? 1300 : 0);
   }
 }
 
@@ -799,13 +803,13 @@ const CLIPS = {
     chapters: [[0, 118], [119, 200], [201, 282], [283, 352]] },
   mpcsim: {
     shampoo: { src: V + "mpc_shampoo.mp4", poster: V + "mpc_shampoo.jpg", frames: 497,
-      seg: [["P", 0, 89], ["E", 90, 101], ["P", 102, 232], ["E", 233, 269], ["P", 270, 451], ["E", 452, 496]] },
+      seg: [["P", 0, 6], ["E", 7, 101], ["P", 102, 149], ["E", 150, 269], ["P", 270, 366], ["E", 367, 496]] },
     toothpaste: { src: V + "mpc_toothpaste.mp4", poster: V + "mpc_toothpaste.jpg", frames: 417,
-      seg: [["P", 0, 101], ["E", 102, 111], ["P", 112, 263], ["E", 264, 314], ["P", 315, 416]] },
+      seg: [["P", 0, 5], ["E", 6, 111], ["P", 112, 143], ["E", 144, 314], ["P", 315, 325], ["E", 326, 416]] },
     cap: { src: V + "mpc_cap.mp4", poster: V + "mpc_cap.jpg", frames: 433,
-      seg: [["P", 0, 87], ["E", 88, 156], ["P", 157, 225], ["E", 226, 286], ["P", 287, 381], ["E", 382, 432]] },
+      seg: [["P", 0, 12], ["E", 13, 156], ["P", 157, 160], ["E", 161, 286], ["P", 287, 305], ["E", 306, 432]] },
     sheep: { src: V + "mpc_sheep.mp4", poster: V + "mpc_sheep.jpg", frames: 385,
-      seg: [["P", 0, 71], ["E", 72, 117], ["P", 118, 208], ["E", 209, 268], ["P", 269, 354], ["E", 355, 384]] },
+      seg: [["P", 0, 5], ["E", 6, 117], ["P", 118, 126], ["E", 127, 268], ["P", 269, 289], ["E", 290, 384]] },
   },
   mpcreal: {
     box: { src: V + "mpc_box.mp4", poster: V + "mpc_box.jpg", frames: 348,
@@ -822,6 +826,7 @@ function bindTabs(viewer, onPick) {
 }
 
 function initPlayers() {
+  if (!$("#simdynPlayer") || !$("#realdynPlayer") || !$("#mpcsimPlayer") || !$("#mpcrealPlayer")) return;
   // sim dynamics
   const sd = new ScrubPlayer($("#simdynPlayer")), sdCap = $("#simdynCap");
   const pickSd = k => { sd.load(CLIPS.simdyn[k]); sdCap.innerHTML = CLIPS.simdyn[k].cap; };
@@ -1001,9 +1006,11 @@ function initAblation() {
 
 /* ---------------- boot ---------------- */
 function boot() {
-  renderTex(); initChrome(); initCapTable(); initReveal(); initCounters();
-  initHero(); initMoe(); initRollout(); initPlanner(); initDonut(); initCopy();
-  initPlayers(); initBench(); initDroid(); initAblation();
+  // each block is independent: a section removed from the HTML must not break the others
+  [renderTex, initChrome, initCapTable, initReveal, initCounters, initHero, initMoe, initRollout,
+   initPlanner, initDonut, initCopy, initPlayers, initBench, initDroid, initAblation].forEach(fn => {
+    try { fn(); } catch (e) { /* section not present */ }
+  });
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
 })();
